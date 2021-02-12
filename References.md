@@ -1,0 +1,6 @@
+[https://www.javatpoint.com](https://www.javatpoint.com/design-patterns-in-java)
+[https://sourcemaking.com](https://sourcemaking.com/design_patterns)
+[https://www.journaldev.com](https://www.journaldev.com/1827/java-design-patterns-example-tutorial)
+[https://dofactory.com](https://dofactory.com/net/design-patterns)
+[https://refactoring.guru](https://refactoring.guru/design-patterns)
+[https://www.tutorialspoint.com](https://www.tutorialspoint.com/design_pattern/index.htm)
