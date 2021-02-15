@@ -1,3 +1,5 @@
+using System;
+
 namespace DesignPatterns.SingletonPattern
 {
     #region Sample1
@@ -88,6 +90,61 @@ namespace DesignPatterns.SingletonPattern
                 Print.ToConsol("We already have an instance now.Use it.");
                 return instance;
             }
+        }
+    }
+    #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample4
+    public sealed class SingletonFullyLazy
+    {
+        private SingletonFullyLazy() { }
+
+        public static SingletonFullyLazy Instance { get { return Nested.instance; } }
+
+        private class Nested
+        {
+            // Explicit static constructor to tell C# compiler
+            // not to mark type as beforefieldinit
+            static Nested() { }
+
+            internal static readonly SingletonFullyLazy instance = new SingletonFullyLazy();
+        }
+    }
+    #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample5
+    public sealed class SingletonLazy
+    {
+        private static readonly Lazy<SingletonLazy>
+            lazy =
+            new Lazy<SingletonLazy>
+                (() => new SingletonLazy());
+
+        public static SingletonLazy Instance { get { return lazy.Value; } }
+
+        private SingletonLazy() { }
+    }
+    #endregion
+
+    #region Sample6
+
+    [Serializable]
+    public class SerializedSingleton
+    {
+        private static long serialVersionUID = -7604766932017737115L;
+
+        private SerializedSingleton() { }
+
+        private static class SingletonHelper
+        {
+            internal static SerializedSingleton instance = new SerializedSingleton();
+        }
+
+        public static SerializedSingleton getInstance()
+        {
+            return SingletonHelper.instance;
         }
     }
     #endregion
