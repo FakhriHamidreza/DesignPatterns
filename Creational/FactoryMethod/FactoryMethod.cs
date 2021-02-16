@@ -29,6 +29,7 @@ namespace DesignPatterns.FactoryMethodPattern
             Print.ToConsol("Tigers prefer hunting...\n");
         }
     }
+
     public abstract class IAnimalFactory
     {
         //Remember the GoF definition which says "....Factory method lets a class defer instantiation to subclasses."
@@ -63,52 +64,40 @@ namespace DesignPatterns.FactoryMethodPattern
     #region Sample2
     public interface ImageReader
     {
-        DecodedImage getDecodeImage();
+        DecodedImage GetDecodeImage();
     }
 
     public class DecodedImage
     {
         private string image;
 
-        public DecodedImage(string image)
-        {
+        public DecodedImage(string image) =>
             this.image = image;
-        }
 
-        public override string ToString()
-        {
-            return image + ": is decoded";
-        }
+        public override string ToString() =>
+            image + ": is decoded";
     }
 
     public class GifReader : ImageReader
     {
         private DecodedImage decodedImage;
 
-        public GifReader(string image)
-        {
+        public GifReader(string image) =>
             this.decodedImage = new DecodedImage(image);
-        }
 
-        public DecodedImage getDecodeImage()
-        {
-            return decodedImage;
-        }
+        public DecodedImage GetDecodeImage() =>
+            decodedImage;
     }
 
     public class JpegReader : ImageReader
     {
         private DecodedImage decodedImage;
 
-        public JpegReader(string image)
-        {
+        public JpegReader(string image) =>
             decodedImage = new DecodedImage(image);
-        }
 
-        public DecodedImage getDecodeImage()
-        {
-            return decodedImage;
-        }
+        public DecodedImage GetDecodeImage() =>
+            decodedImage;
     }
     #endregion
     // ---------------------------------------------------------------
@@ -117,34 +106,28 @@ namespace DesignPatterns.FactoryMethodPattern
     public abstract class Plan
     {
         protected double rate;
-        public abstract void getRate();
+        public abstract void GetRate();
 
-        public void calculateBill(int units) =>
+        public void CalculateBill(int units) =>
              Print.ToConsol((units * rate).ToString());
     }//end of Plan class.  
 
     class DomesticPlan : Plan
     {
-        public override void getRate()
-        {
+        public override void GetRate() =>
             rate = 3.50;
-        }
     }//end of DomesticPlan class.  
 
     class CommercialPlan : Plan
     {
-        public override void getRate()
-        {
+        public override void GetRate() =>
             rate = 7.50;
-        }
     }//end of CommercialPlan class.  
 
     class InstitutionalPlan : Plan
     {
-        public override void getRate()
-        {
+        public override void GetRate() =>
             rate = 5.50;
-        }
     }//end of InstitutionalPlan class.  
 
     public class GetPlanFactory
@@ -178,12 +161,12 @@ namespace DesignPatterns.FactoryMethodPattern
     #region Sample4
     public abstract class Computer
     {
-        public abstract string getRAM();
-        public abstract string getHDD();
-        public abstract string getCPU();
+        public abstract string GetRAM();
+        public abstract string GetHDD();
+        public abstract string GetCPU();
 
         public override string ToString() =>
-            $"{this.GetType().Name} Config:: RAM = {this.getRAM()}, HDD = {this.getHDD()}, CPU = {this.getCPU()}";
+            $"{this.GetType().Name} Config:: RAM = {this.GetRAM()}, HDD = {this.GetHDD()}, CPU = {this.GetCPU()}";
     }
 
     public class PC : Computer
@@ -199,13 +182,13 @@ namespace DesignPatterns.FactoryMethodPattern
             this.cpu = cpu;
         }
 
-        public override string getRAM() =>
+        public override string GetRAM() =>
             this.ram;
 
-        public override string getHDD() =>
+        public override string GetHDD() =>
             this.hdd;
 
-        public override string getCPU() =>
+        public override string GetCPU() =>
             this.cpu;
     }
 
@@ -222,13 +205,13 @@ namespace DesignPatterns.FactoryMethodPattern
             this.cpu = cpu;
         }
 
-        public override string getRAM() =>
+        public override string GetRAM() =>
             this.ram;
 
-        public override string getHDD() =>
+        public override string GetHDD() =>
             this.hdd;
 
-        public override string getCPU() =>
+        public override string GetCPU() =>
             this.cpu;
     }
 

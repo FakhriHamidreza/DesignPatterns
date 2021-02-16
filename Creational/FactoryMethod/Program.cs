@@ -30,7 +30,7 @@ namespace DesignPatterns.FactoryMethodPattern
             string image = "myPic.gif";
 
             Console.WriteLine(image.IndexOf('.') + 1);
-            System.Console.WriteLine(image.Length);
+            Console.WriteLine(image.Length);
 
             string format = image.Substring(image.IndexOf('.') + 1, (image.Length - image.IndexOf('.') - 1));
 
@@ -43,7 +43,7 @@ namespace DesignPatterns.FactoryMethodPattern
                 reader = new JpegReader(image);
             }
 
-            System.Diagnostics.Debug.Assert(!(reader is null), "I dont you what do you want!");
+            Diagnostics.Debug.Assert(!(reader is null), "I dont you what do you want!");
             decodedImage = reader.getDecodeImage();
             Console.WriteLine(decodedImage); */    
             #endregion
