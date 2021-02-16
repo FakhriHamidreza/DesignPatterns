@@ -26,12 +26,17 @@
             }
 
             // test thread-safe
-            Thread process1 = new Thread(() =>
+
+            System.Threading.Tasks.Parallel.Invoke(
+                () => TestSingleton("First")
+             );
+
+            var process1 = new Thread(() =>
             {
                 TestSingleton("Thread 1");
             });
 
-            Thread process2 = new Thread(() =>
+            var process2 = new Thread(() =>
             {
                 TestSingleton("Thread 2");
             });
@@ -47,7 +52,7 @@
         public static void TestSingleton(string threadName)
         {
             Singleton singleton = Singleton.Instance();
-            Console.WriteLine($"Number of instances in {threadName} = {singleton.numberOfInstances}");
+            Console.WriteLine($"Number of instances in {threadName} = {singleton.GetNumberOfInstances()}, Total Nunmer of Calls: {singleton.GetNumberOfCalls()}");
         }
     }
 }

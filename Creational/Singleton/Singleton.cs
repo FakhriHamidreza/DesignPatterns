@@ -10,7 +10,9 @@ namespace DesignPatterns.SingletonPattern
         // Lock synchronization object
         private static readonly object syncLock = new object();
 
-        public int numberOfInstances = 0;
+        private int numberOfInstances = 0;
+
+        private int numberOfCalls = 0;
 
         //Private constructor is used to prevent
         //creation of instances with 'new' keyword outside this class
@@ -21,6 +23,12 @@ namespace DesignPatterns.SingletonPattern
             Print.ToConsol($"Number of instances in Constraction = {numberOfInstances}");
         }
 
+        public int GetNumberOfInstances() =>
+            this.numberOfInstances;
+
+        public int GetNumberOfCalls() =>
+            this.numberOfCalls;
+
         public static Singleton Instance()
         {
             if (instance == null)
@@ -30,11 +38,12 @@ namespace DesignPatterns.SingletonPattern
                     if (instance == null)
                     {
                         instance = new Singleton();
-                        //instance.numberOfInstances++;
                     }
                 }
             }
 
+            instance.numberOfCalls++;
+            
             return instance;
         }
     }

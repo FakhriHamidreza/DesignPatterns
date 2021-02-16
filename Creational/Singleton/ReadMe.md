@@ -24,7 +24,7 @@
 - eager/ early Instantiation
 - Lazy/ late Instantiation
 - thread safe
-- static block
+- static initialization
 - serialize/ deserialize
 
 ## Pros and Cons:
@@ -36,6 +36,7 @@
 - [] The Singleton pattern can mask bad design, for instance, when the components of the program know too much about each other.
 - [] The pattern requires special treatment in a multithreaded environment so that multiple threads won’t create a singleton object several times.
 - [] It may be difficult to unit test the client code of the Singleton because many test frameworks rely on inheritance when producing mock objects. Since the constructor of the singleton class is private and overriding static methods is impossible in most languages, you will need to think of a creative way to mock the singleton. Or just don’t write the tests. Or don’t use the Singleton pattern.
+- [] This pattern reduces the potential for parallelism within a program because to access the singleton in a multi-threaded system, an object must be serialized (by locking).
 
 ## Relations with Other Patterns:
 > - A Facade class can often be transformed into a Singleton since a single facade object is sufficient in most cases.(because only one Facade object is required)
