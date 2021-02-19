@@ -9,25 +9,20 @@ namespace DesignPatterns.FactoryMethodPattern
 
     public class Dog : IAnimal
     {
-        public void Speak()
-        {
+        public void Speak() =>
             Print.ToConsol("Dog says: Bow-Wow.");
-        }
-        public void Action()
-        {
+
+        public void Action() =>
             Print.ToConsol("Dogs prefer barking...\n");
-        }
     }
+
     public class Tiger : IAnimal
     {
-        public void Speak()
-        {
+        public void Speak() =>
             Print.ToConsol("Tiger says: Halum.");
-        }
-        public void Action()
-        {
+
+        public void Action() =>
             Print.ToConsol("Tigers prefer hunting...\n");
-        }
     }
 
     public abstract class IAnimalFactory
@@ -39,6 +34,7 @@ namespace DesignPatterns.FactoryMethodPattern
         //protected abstract IAnimal CreateAnimal();
         public abstract IAnimal CreateAnimal();
     }
+
     public class DogFactory : IAnimalFactory
     {
         //protected override IAnimal CreateAnimal()
@@ -48,6 +44,7 @@ namespace DesignPatterns.FactoryMethodPattern
             return new Dog();
         }
     }
+
     public class TigerFactory : IAnimalFactory
     {
         //protected override IAnimal CreateAnimal()
@@ -328,6 +325,141 @@ namespace DesignPatterns.FactoryMethodPattern
             return null;
         }
     }
+    #endregion
+
+    #region Sample7
+
+    abstract class Toy
+    {
+        public string Name { get; set; }
+
+        public int Price { get; set; } = 0;
+
+        public void Prepare() =>
+            Print.ToConsol($"{this.Name} is prepared");
+
+        public void Package() =>
+            Print.ToConsol($"{this.Name} is packaged");
+
+        public void Label() =>
+            Print.ToConsol($"{this.Name} is priced at {this.Price}");
+    }
+
+    class Car : Toy
+    {
+        public Car()
+        {
+            this.Name = "Car";
+            this.Price = 20;
+        }
+    }
+
+    class NyCar : Car { }
+
+    class CaCar : Car { }
+
+    class Helicopter : Toy
+    {
+        public Helicopter()
+        {
+            this.Name = "Helicopter";
+            this.Price = 100;
+        }
+    }
+
+    class NyHelicopter : Helicopter { }
+
+    class CaHelicopter : Helicopter { }
+
+    class NySimpleFactory
+    {
+        public Toy CreateToy(string toyName)
+        {
+            Toy toy = null;
+
+            if ("car" == toyName)
+            {
+                toy = new NyCar();
+            }
+            else if ("helicopter" == toyName)
+            {
+                toy = new NyHelicopter();
+            }
+
+            return toy;
+        }
+    }
+
+    class CaSimpleFactory
+    {
+        public Toy CreateToy(string toyName)
+        {
+            Toy toy = null;
+
+            if ("car" == toyName)
+            {
+                toy = new CaCar();
+            }
+            else if ("helicopter" == toyName)
+            {
+                toy = new CaHelicopter();
+            }
+
+            return toy;
+        }
+    }
+
+    abstract class ToysFactory
+    {
+        public Toy ProduceToy(string toyName)
+        {
+            var toy = this.CreateToy(toyName);
+            toy.Prepare();
+            toy.Package();
+            toy.Label();
+
+            return toy;
+        }
+
+        abstract public Toy CreateToy(string toyName);
+    }
+
+    class NyToysFactory : ToysFactory
+    {
+        public NySimpleFactory SimpleFactory;
+
+        public NyToysFactory(NySimpleFactory simpleFactory) =>
+            this.SimpleFactory = simpleFactory;
+
+        public override Toy CreateToy(string toyName)
+        {
+            var toy = this.SimpleFactory.CreateToy(toyName);
+            toy.Prepare();
+            toy.Package();
+            toy.Label();
+
+            return toy;
+        }
+    }
+
+    class CaToysFactory : ToysFactory
+    {
+        public CaSimpleFactory SimpleFactory;
+
+        public CaToysFactory(CaSimpleFactory simpleFactory) =>
+            this.SimpleFactory = simpleFactory;
+
+        public override Toy CreateToy(string toyName)
+        {
+            var toy = this.SimpleFactory.CreateToy(toyName);
+            toy.Prepare();
+            toy.Package();
+            toy.Label();
+
+            return toy;
+        }
+    }
+
     #endregion
 
     public static class Print

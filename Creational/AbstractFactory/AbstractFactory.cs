@@ -1,4 +1,6 @@
-﻿namespace DesignPatterns.AbstractFactoryPattern
+﻿using System.Collections.Generic;
+
+namespace DesignPatterns.AbstractFactoryPattern
 {
     #region Sample1
     public abstract class Computer
@@ -113,7 +115,7 @@
     }
 
     public interface IRegularShape : IShape { }
-    
+
     public interface IRoundedShape : IShape { }
 
     public class RoundedRectangle : IRoundedShape
@@ -485,6 +487,7 @@
     }//End of the FactoryCreator.
 
     #endregion
+    // ---------------------------------------------------------------
 
     #region Sample5
     // class CPU
@@ -558,6 +561,241 @@
 
         public abstract MMU CreateMMU();
     }
+    #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample6
+
+    public class Engine { }
+
+    public class Wheel { }
+
+    public class RotorBlade { }
+
+    public class NyEngine : Engine
+    {
+        public NyEngine() =>
+            Print.ToConsol("New York Engin is Creating....");
+    }
+
+    public class NyWheel : Wheel
+    {
+        public NyWheel() =>
+            Print.ToConsol("New York Wheel is Creating....");
+    }
+
+    public class NyRotorBlade : RotorBlade
+    {
+        public NyRotorBlade() =>
+            Print.ToConsol("New York Rotor Blade is Creating....");
+    }
+
+    public class CaEngine : Engine
+    {
+        public CaEngine() =>
+            Print.ToConsol("California Engin is Creating....");
+    }
+
+    public class CaWheel : Wheel
+    {
+        public CaWheel() =>
+            Print.ToConsol("California Wheel is Creating....");
+    }
+
+    public class CaRotorBlade : RotorBlade
+    {
+        public CaRotorBlade() =>
+            Print.ToConsol("California Rotor Blade is Creating....");
+    }
+
+    abstract class ComponentsFactory
+    {
+        public abstract Engine CreateEngine();
+
+        public abstract Wheel CreateWheel();
+
+        public abstract RotorBlade CreateRotorBlade();
+    }
+
+    class NyComponentsFactory : ComponentsFactory
+    {
+        public override Engine CreateEngine() =>
+            new NyEngine();
+
+        public override Wheel CreateWheel() =>
+            new NyWheel();
+
+        public override RotorBlade CreateRotorBlade() =>
+            new NyRotorBlade();
+    }
+
+    class CaComponentsFactory : ComponentsFactory
+    {
+        public override Engine CreateEngine() =>
+            new CaEngine();
+
+        public override Wheel CreateWheel() =>
+            new CaWheel();
+
+        public override RotorBlade CreateRotorBlade() =>
+            new CaRotorBlade();
+    }
+
+    abstract class Toy
+    {
+        public string Name { get; set; }
+
+        public int Price { get; set; }
+
+        public Engine Engine { get; set; }
+
+        public List<Wheel> Wheels { get; set; }
+
+        public RotorBlade RotorBlade { get; set; }
+
+        public ComponentsFactory ComponentsFactory { get; set; }
+
+        public abstract void Prepare();
+
+        public void Package() =>
+            Print.ToConsol($"{this.Name} is packaged");
+
+        public void Label() =>
+            Print.ToConsol($"{this.Name} is priced at {this.Price}");
+    }
+
+    class NyCar : Toy
+    {
+        public NyCar(ComponentsFactory componentsFactory)
+        {
+            this.ComponentsFactory = componentsFactory;
+
+            Name = "NyCar";
+            Price = 30;
+        }
+
+        public override void Prepare()
+        {
+            this.Engine = this.ComponentsFactory.CreateEngine();
+
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+        }
+    }
+
+    class NyHelicopter : Toy
+    {
+        public NyHelicopter(ComponentsFactory componentsFactory)
+        {
+            this.ComponentsFactory = componentsFactory;
+
+            Name = "NyHelicopter";
+            Price = 100;
+        }
+
+        public override void Prepare()
+        {
+            this.Engine = this.ComponentsFactory.CreateEngine();
+            this.RotorBlade = this.ComponentsFactory.CreateRotorBlade();
+        }
+    }
+
+    class CaCar : Toy
+    {
+        public CaCar(ComponentsFactory componentsFactory)
+        {
+            this.ComponentsFactory = componentsFactory;
+
+            Name = "CaCar";
+            Price = 40;
+        }
+
+        public override void Prepare()
+        {
+            this.Engine = this.ComponentsFactory.CreateEngine();
+
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+            this.Wheels.Add(this.ComponentsFactory.CreateWheel());
+        }
+    }
+
+    class CaHelicopter : Toy
+    {
+        public CaHelicopter(ComponentsFactory componentsFactory)
+        {
+            this.ComponentsFactory = componentsFactory;
+            Name = "CaHelicopter";
+            Price = 120;
+        }
+
+        public override void Prepare()
+        {
+            this.Engine = this.ComponentsFactory.CreateEngine();
+            this.RotorBlade = this.ComponentsFactory.CreateRotorBlade();
+        }
+    }
+
+    abstract class ToysFactory
+    {
+        public Toy ProduceToy(string toyName)
+        {
+            var toy = this.CreateToy(toyName);
+            toy.Prepare();
+            toy.Package();
+            toy.Label();
+
+            return toy;
+        }
+
+        abstract public Toy CreateToy(string toyName);
+    }
+
+    class NyToysFactory : ToysFactory
+    {
+        public override Toy CreateToy(string toyName)
+        {
+            Toy toy = null;
+
+            var nyComponentsFactory = new NyComponentsFactory();
+
+            if ("car" == toyName)
+            {
+                toy = new NyCar(nyComponentsFactory);
+            }
+            else if ("helicopter" == toyName)
+            {
+                toy = new NyHelicopter(nyComponentsFactory);
+            }
+
+            return toy;
+        }
+    }
+
+    class CaToysFactory : ToysFactory
+    {
+        public override Toy CreateToy(string toyName)
+        {
+            Toy toy = null;
+
+            var caComponentsFactory = new CaComponentsFactory();
+
+            if ("car" == toyName)
+            {
+                toy = new CaCar(caComponentsFactory);
+            }
+            else if ("helicopter" == toyName)
+            {
+                toy = new CaHelicopter(caComponentsFactory);
+            }
+
+            return toy;
+        }
+    }
+
     #endregion
 
     public static class Print
