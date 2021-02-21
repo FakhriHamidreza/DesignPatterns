@@ -570,24 +570,202 @@ namespace DesignPatterns.BuilderPattern
     #region Sample6
     public abstract class Machine
     {
+        public CarType CarType;
+
         public int Seats;
+
+        public Engine Engine;
+
+        public Transmission Transmission;
+
+        public TripComputer TripComputer;
+
+        public GPSNavigator GPSNavigator;
+
+        public abstract Machine GetResult();
+
+        public abstract string Print();
     }
 
-    public class CarNew : Machine { }
+    public enum CarType
+    {
+        None,
+        CITY_CAR,
+        SPORTS_CAR,
+        SUV
+    }
 
-    public class Manual : Machine { }
+    /**
+     * Just another feature of a car.
+     */
+    public class GPSNavigator
+    {
+        public string route { set; get; }
+
+        public GPSNavigator() =>
+            this.route = "221b, Baker Street, London  to Scotland Yard, 8-10 Broadway, London";
+
+        public GPSNavigator(string manualRoute) =>
+            this.route = manualRoute;
+
+        public override string ToString() =>
+            this.route;
+    }
+
+    /**
+     * Just another feature of a car.
+     */
+    public enum Transmission
+    {
+        None,
+        SINGLE_SPEED,
+        MANUAL,
+        AUTOMATIC,
+        SEMI_AUTOMATIC
+    }
+
+    /**
+     * Just another feature of a car.
+     */
+    public class TripComputer
+    {
+        public CarNew Car { set; get; }
+
+        public void ShowFuelLevel() =>
+            Print.ToConsolLine("Fuel level: " + (this.Car?.Fuel ?? 0));
+
+        public void ShowStatus()
+        {
+            if (this.Car?.Engine?.IsStarted() != null && this.Car.Engine.IsStarted())
+            {
+                Print.ToConsolLine("Car is started");
+            }
+            else
+            {
+                Print.ToConsolLine("Car isn't started");
+            }
+        }
+
+        public override string ToString()
+        {
+            this.ShowFuelLevel();
+            this.ShowStatus();
+
+            return "";
+        }
+    }
+
+    public class CarNew : Machine
+    {
+        public double Fuel { get; set; } = 0;
+
+        public CarNew()
+        {
+            this.CarType = CarType.None;
+            this.Seats = 0;
+            this.Engine = null;
+            this.Transmission = Transmission.None;
+            this.TripComputer = null;
+            this.GPSNavigator = null;
+            this.Fuel = 0;
+        }
+
+        public CarNew(CarType carType, int seats, Engine engine, Transmission transmission,
+                   TripComputer tripComputer, GPSNavigator gpsNavigator)
+        {
+            this.CarType = carType;
+            this.Seats = seats;
+            this.Engine = engine;
+            this.Transmission = transmission;
+            this.TripComputer = tripComputer;
+
+            if (this.TripComputer != null)
+            {
+                this.TripComputer.Car = this;
+            }
+
+            this.GPSNavigator = gpsNavigator;
+        }
+
+        public override Machine GetResult() =>
+            new CarNew(CarType, Seats, Engine, Transmission, TripComputer, GPSNavigator);
+        
+        public override string Print() =>
+            "XXXX";
+    }
+
+    public class Manual : Machine
+    {
+        public Manual()
+        {
+            this.CarType = CarType.None;
+            this.Seats = 0;
+            this.Engine = null;
+            this.Transmission = Transmission.None;
+            this.TripComputer = null;
+            this.GPSNavigator = null;
+        }
+
+        public Manual(CarType carType, int seats, Engine engine, Transmission transmission,
+                      TripComputer tripComputer, GPSNavigator gpsNavigator)
+        {
+            this.CarType = carType;
+            this.Seats = seats;
+            this.Engine = engine;
+            this.Transmission = transmission;
+            this.TripComputer = tripComputer;
+            this.GPSNavigator = gpsNavigator;
+        }
+
+        public override Machine GetResult() =>
+            new Manual(CarType, Seats, Engine, Transmission, TripComputer, GPSNavigator);
+
+        public override string Print()
+        {
+            string info = "";
+            info += "Type of car: " + CarType + "\n";
+            info += "Count of seats: " + Seats + "\n";
+            info += "Engine: volume - " + Engine.Volume + "; mileage - " + Engine.Mileage + "\n";
+            info += "Transmission: " + Transmission + "\n";
+
+            if (this.TripComputer != null)
+            {
+                info += "Trip Computer: Functional" + "\n";
+            }
+            else
+            {
+                info += "Trip Computer: N/A" + "\n";
+            }
+            if (this.GPSNavigator != null)
+            {
+                info += "GPS Navigator: Functional" + "\n";
+            }
+            else
+            {
+                info += "GPS Navigator: N/A" + "\n";
+            }
+
+            return info;
+        }
+    }
 
     public interface Builder
     {
+        void SetCarType(CarType type);
+
         void Reset();
 
         void SetSeats(int seatCount);
 
-        void SetEngine(IEngin engin);
+        void SetEngine(IEngine engin);
 
-        void SetTripComputer(bool hasTripComputer);
+        void SetTripComputer(TripComputer tripComputer);
 
-        void SetGPS(bool hasGPS);
+        void SetGPS(GPSNavigator gpsNavigator);
+
+        void SetTransmission(Transmission transmission);
+
+        Machine GetProduct();
     }
 
     public class CarNewBuilder : Builder
@@ -600,30 +778,50 @@ namespace DesignPatterns.BuilderPattern
         public void Reset() =>
             Car = new CarNew();
 
+        public void SetCarType(CarType carType)
+        {
+            this.Car.CarType = carType;
+            Print.ToConsolLine($"Set {this.Car.CarType} type");
+        }
+
         public void SetSeats(int seatCount)
         {
             this.Car.Seats = seatCount;
             Print.ToConsolLine($"Set {this.Car.Seats} Seats");
         }
 
-        public void SetEngine(IEngin engin) =>
+        public void SetEngine(IEngine engin)
+        {
+            this.Car.Engine = engin as Engine;
             Print.ToConsolLine($"Set Engin");
+        }
 
-        public void SetTripComputer(bool hasTripComputer) =>
-            Print.ToConsolLine($"Set {hasTripComputer} TripComputer");
+        public void SetTripComputer(TripComputer tripComputer)
+        {
+            this.Car.TripComputer = tripComputer;
+            Print.ToConsolLine($"Set TripComputer: {this.Car.TripComputer}");
+        }
 
-        public void SetGPS(bool hasGPS) =>
-            Print.ToConsolLine($"Set {hasGPS} GPS");
+        public void SetGPS(GPSNavigator gpsNavigator)
+        {
+            this.Car.GPSNavigator = gpsNavigator;
+            Print.ToConsolLine($"Set {this.Car.GPSNavigator} GPS");
+        }
 
-        public CarNew GetProduct()
+        public void SetTransmission(Transmission transmission)
+        {
+            this.Car.Transmission = transmission;
+            Print.ToConsolLine($"Set {this.Car.Transmission} Transmission");
+        }
+
+        public Machine GetProduct()
         {
             var product = this.Car;
-
-            this.Reset();
 
             return product;
         }
     }
+
     public class CarManualBuilder : Builder
     {
         private Manual Manual;
@@ -634,40 +832,104 @@ namespace DesignPatterns.BuilderPattern
         public void Reset() =>
             Manual = new Manual();
 
+        public void SetCarType(CarType carType)
+        {
+            this.Manual.CarType = carType;
+            Print.ToConsolLine($"Set {this.Manual.CarType} type");
+        }
+
         public void SetSeats(int seatCount)
         {
             this.Manual.Seats = seatCount;
             Print.ToConsolLine($"Set {this.Manual.Seats} Seats");
         }
-        public void SetEngine(IEngin engin) =>
+
+        public void SetEngine(IEngine engin)
+        {
+            this.Manual.Engine = engin as Engine;
             Print.ToConsolLine($"Set Engin");
+        }
 
-        public void SetTripComputer(bool hasTripComputer) =>
-            Print.ToConsolLine($"Set {hasTripComputer} TripComputer");
+        public void SetTripComputer(TripComputer tripComputer)
+        {
+            this.Manual.TripComputer = tripComputer;
+            Print.ToConsolLine($"Set TripComputer: {this.Manual.TripComputer}");
+        }
 
-        public void SetGPS(bool hasGPS) =>
-            Print.ToConsolLine($"Set {hasGPS} GPS");
+        public void SetGPS(GPSNavigator gpsNavigator)
+        {
+            this.Manual.GPSNavigator = gpsNavigator;
+            Print.ToConsolLine($"Set {this.Manual.GPSNavigator} GPS");
+        }
 
-        public Manual GetProduct()
+        public void SetTransmission(Transmission transmission)
+        {
+            this.Manual.Transmission = transmission;
+            Print.ToConsolLine($"Set {this.Manual.Transmission} Transmission");
+        }
+
+        public Machine GetProduct()
         {
             var product = this.Manual;
-
-            this.Reset();
-
+            product.Engine.On();
+            product.Engine.Go(30);
+            
             return product;
         }
     }
 
-    public interface IEngin
-    {
+    public interface IEngine { }
 
+    /**
+     * Just another feature of a car.
+     */
+    public class Engine : IEngine
+    {
+        public double Volume { set; get; }
+
+        public double Mileage;
+
+        public bool Started;
+
+        public Engine(double volume, double mileage)
+        {
+            this.Volume = volume;
+            this.Mileage = mileage;
+        }
+
+        public void On() =>
+            Started = true;
+
+        public void Off() =>
+            Started = false;
+
+        public bool IsStarted() =>
+            Started;
+
+        public void Go(double mileage)
+        {
+            if (Started)
+            {
+                this.Mileage += mileage;
+                Print.ToConsolLine($"Mileage: {Mileage}");
+            }
+            else
+            {
+                Print.ToConsolLine("Cannot go(), you must start engine first!");
+            }
+        }
     }
 
-    public class SportEngine : IEngin
+    public class SportEngine : Engine
     {
-
+        public SportEngine(double volume, double mileage) : base(volume, mileage) { }
     }
 
+    /**
+     * Director defines the order of building steps. It works with a builder object
+     * through common Builder interface. Therefore it may not know what product is
+     * being built.
+     */
     public class DirectorNew
     {
         private Builder builder;
@@ -678,13 +940,34 @@ namespace DesignPatterns.BuilderPattern
         public void ConstructSportsCar(Builder builder)
         {
             builder.Reset();
+            builder.SetCarType(CarType.SPORTS_CAR);
             builder.SetSeats(2);
-            builder.SetEngine(new SportEngine());
-            builder.SetTripComputer(true);
-            builder.SetGPS(true);
+            builder.SetEngine(new SportEngine(3.0, 0));
+            builder.SetTransmission(Transmission.SEMI_AUTOMATIC);
+            builder.SetTripComputer(new TripComputer());
+            builder.SetGPS(new GPSNavigator());
         }
 
-        public void constructSUV(Builder builder) { }
+        public void ConstructSUV(Builder builder)
+        {
+            builder.Reset();
+            builder.SetCarType(CarType.SUV);
+            builder.SetSeats(4);
+            builder.SetEngine(new Engine(2.5, 0));
+            builder.SetTransmission(Transmission.MANUAL);
+            builder.SetGPS(new GPSNavigator("134b, Montreal"));
+        }
+
+        public void ConstructCityCar(Builder builder)
+        {
+            builder.Reset();
+            builder.SetCarType(CarType.CITY_CAR);
+            builder.SetSeats(3);
+            builder.SetEngine(new Engine(1.2, 0));
+            builder.SetTransmission(Transmission.AUTOMATIC);
+            builder.SetTripComputer(new TripComputer());
+            builder.SetGPS(new GPSNavigator("845d, Toronto"));
+        }
     }
     #endregion
     // --------------------------------------------------
@@ -1578,7 +1861,7 @@ namespace DesignPatterns.BuilderPattern
         } //End of the preparePizza() method   
     }
     #endregion
-
+    // --------------------------------------------------
     public static class Print
     {
         public static void ToConsol(string txt, params object[] para) =>

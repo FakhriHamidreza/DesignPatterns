@@ -85,15 +85,21 @@ namespace DesignPatterns.Client
             #endregion
 
             #region Sample6
-            /* var director = new DirectorNew();
+            var director = new DirectorNew();
 
             var builder = new CarNewBuilder();
             director.ConstructSportsCar(builder);
             var car = builder.GetProduct();
+            car.GetResult();
+
+            System.Console.WriteLine("*********************************");
 
             var manualBuilder = new CarManualBuilder();
-            director.ConstructSportsCar(manualBuilder);
-            var manual = manualBuilder.GetProduct(); */
+            director.ConstructCityCar(manualBuilder);
+            var manual = manualBuilder.GetProduct();
+            manual.GetResult();
+            System.Console.WriteLine("-------------------------------");
+            manual.Print();
             #endregion
 
             #region Sample7
@@ -144,14 +150,14 @@ namespace DesignPatterns.Client
             #endregion
 
             #region Sample10
-            OrderBuilder builder = new OrderBuilder();
+            /* OrderBuilder builder = new OrderBuilder();
 
             OrderedItems orderedItems = builder.PreparePizza();
 
             orderedItems.ShowItems();
 
             Console.WriteLine("\n");
-            Console.WriteLine("Total Cost : " + orderedItems.GetCost());
+            Console.WriteLine("Total Cost : " + orderedItems.GetCost()); */
             #endregion
 
             Console.ReadKey();
