@@ -45,7 +45,7 @@ namespace DesignPatterns.FactoryMethodPattern
 
             Diagnostics.Debug.Assert(!(reader is null), "I dont you what do you want!");
             decodedImage = reader.getDecodeImage();
-            Console.WriteLine(decodedImage); */    
+            Console.WriteLine(decodedImage); */
             #endregion
 
             #region Sample3
@@ -70,8 +70,8 @@ namespace DesignPatterns.FactoryMethodPattern
             #endregion
 
             #region Sample5
-                        // An array of creators
-            Creator[] creators = new Creator[2];
+            // An array of creators
+            /* Creator[] creators = new Creator[2];
             creators[0] = new ConcreteCreatorA();
             creators[1] = new ConcreteCreatorB();
 
@@ -81,7 +81,41 @@ namespace DesignPatterns.FactoryMethodPattern
                 Product product = creator.FactoryMethod();
                 Console.WriteLine("Created {0}",
                   product.GetType().Name);
+            } */
+            #endregion
+
+            #region Sample8
+            /* var creditCard = new PlatinumFactory().CreateProduct();
+
+            if (creditCard != null)
+            {
+                Console.WriteLine("Card Type : " + creditCard.GetCardType());
+                Console.WriteLine("Credit Limit : " + creditCard.GetCreditLimit());
+                Console.WriteLine("Annual Charge :" + creditCard.GetAnnualCharge());
             }
+            else
+            {
+                Console.Write("Invalid Card Type");
+            }
+
+            Console.WriteLine("--------------");
+            creditCard = new MoneyBackFactory().CreateProduct();
+
+            if (creditCard != null)
+            {
+                Console.WriteLine("Card Type : " + creditCard.GetCardType());
+                Console.WriteLine("Credit Limit : " + creditCard.GetCreditLimit());
+                Console.WriteLine("Annual Charge :" + creditCard.GetAnnualCharge());
+            }
+            else
+            {
+                Console.Write("Invalid Card Type");
+            } */
+            #endregion
+
+            #region Sample9
+            var factory = new AirConditioner().ExecuteCreation(Actions.Cooling, 22.5);
+            factory.Operate();
             #endregion
 
             Console.ReadKey();

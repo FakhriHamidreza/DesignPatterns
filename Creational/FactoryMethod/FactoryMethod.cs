@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace DesignPatterns.FactoryMethodPattern
 {
     #region Sample1
@@ -273,6 +276,7 @@ namespace DesignPatterns.FactoryMethodPattern
             new ConcreteProductB();
     }
     #endregion
+    // ---------------------------------------------------------------
 
     #region Sample6
     public interface IShape
@@ -326,6 +330,7 @@ namespace DesignPatterns.FactoryMethodPattern
         }
     }
     #endregion
+    // ---------------------------------------------------------------
 
     #region Sample7
 
@@ -460,6 +465,169 @@ namespace DesignPatterns.FactoryMethodPattern
         }
     }
 
+    #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample8
+    public interface CreditCard
+    {
+        string GetCardType();
+
+        int GetCreditLimit();
+
+        int GetAnnualCharge();
+    }
+
+    public class MoneyBack : CreditCard
+    {
+        public string GetCardType() =>
+            "MoneyBack";
+
+        public int GetCreditLimit() =>
+            15000;
+
+        public int GetAnnualCharge() =>
+            500;
+    }
+
+    public class Titanium : CreditCard
+    {
+        public string GetCardType() =>
+            "Titanium Edge";
+
+        public int GetCreditLimit() =>
+            25000;
+
+        public int GetAnnualCharge() =>
+            1500;
+    }
+
+    public class Platinum : CreditCard
+    {
+        public string GetCardType() =>
+            "Platinum Plus";
+
+        public int GetCreditLimit() =>
+            35000;
+
+        public int GetAnnualCharge() =>
+            2000;
+    }
+
+    public abstract class CreditCardFactory
+    {
+        protected abstract CreditCard MakeProduct();
+
+        public CreditCard CreateProduct() =>
+            this.MakeProduct();
+    }
+
+    public class MoneyBackFactory : CreditCardFactory
+    {
+        protected override CreditCard MakeProduct()
+        {
+            CreditCard product = new MoneyBack();
+
+            return product;
+        }
+    }
+
+    public class PlatinumFactory : CreditCardFactory
+    {
+        protected override CreditCard MakeProduct()
+        {
+            CreditCard product = new Platinum();
+
+            return product;
+        }
+    }
+
+    public class TitaniumFactory : CreditCardFactory
+    {
+        protected override CreditCard MakeProduct()
+        {
+            CreditCard product = new Titanium();
+
+            return product;
+        }
+    }
+    #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample9
+    public interface IAirConditioner
+    {
+        void Operate();
+    }
+
+    public class CoolingManager : IAirConditioner
+    {
+        private readonly double _temperature;
+
+        public CoolingManager(double temperature) =>
+            _temperature = temperature;
+
+        public void Operate() =>
+            Print.ToConsol($"Cooling the room to the required temperature of {_temperature} degrees");
+    }
+
+    public class WarmingManager : IAirConditioner
+    {
+        private readonly double _temperature;
+
+        public WarmingManager(double temperature) =>
+            _temperature = temperature;
+
+        public void Operate() =>
+            Print.ToConsol($"Warming the room to the required temperature of {_temperature} degrees.");
+    }
+
+    public abstract class AirConditionerFactory
+    {
+        public abstract IAirConditioner Create(double temperature);
+    }
+
+    public class CoolingFactory : AirConditionerFactory
+    {
+        public override IAirConditioner Create(double temperature) =>
+            new CoolingManager(temperature);
+    }
+
+    public class WarmingFactory : AirConditionerFactory
+    {
+        public override IAirConditioner Create(double temperature) =>
+            new WarmingManager(temperature);
+    }
+
+    public enum Actions
+    {
+        Cooling,
+        Warming
+    }
+
+    public class AirConditioner
+    {
+        private readonly Dictionary<Actions, AirConditionerFactory> _factories;
+
+        public AirConditioner()
+        {
+            /*_factories = new Dictionary<Actions, AirConditionerFactory>
+                            {
+                                { Actions.Cooling, new CoolingFactory() },
+                                { Actions.Warming, new WarmingFactory() }
+                            };*/
+
+            _factories = new Dictionary<Actions, AirConditionerFactory>();
+            foreach (Actions action in Enum.GetValues(typeof(Actions)))
+            {
+                var factory = (AirConditionerFactory)Activator.CreateInstance(Type.GetType("FactoryMethod." + Enum.GetName(typeof(Actions), action) + "Factory"));
+                _factories.Add(action, factory);
+            }
+        }
+
+        public IAirConditioner ExecuteCreation(Actions action, double temperature) =>
+            _factories[action].Create(temperature);
+    }
     #endregion
 
     public static class Print

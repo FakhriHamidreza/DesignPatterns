@@ -1,14 +1,17 @@
-
 ## Name:
->    **Builder**
+
+> **Builder**
 
 ## Complexity/ difficalty:
->   **Medium High**
+
+> **Medium High**
 
 ## Frequency of use:
->   **Medium low**
+
+> **Medium low**
 
 ## Description:
+
     Builder pattern was introduced to solve some of the problems with Factory and Abstract Factory design patterns, when the Object contains a lot of attributes.
 
     There are three major issues with Factory and Abstract Factory design patterns when the Object contains a lot of attributes.
@@ -21,6 +24,7 @@
     We can solve the issues with large number of parameters by providing a constructor with required parameters and then different setter methods to set the optional parameters. The problem with this approach is that the Object state will be inconsistent until unless all the attributes are set explicitly.
 
 ## Intent:
+
     Builder is a creational design pattern that lets you construct complex objects step by step (using simple objects). The pattern allows you to produce different types and representations of an object using the same construction code.
     This type of design pattern comes under creational pattern as this pattern provides one of the best ways to create an object.
     Builder pattern solves the issue with large number of optional parameters and inconsistent state by providing a way to build the object step-by-step and provide a method that will actually return the final Object.
@@ -29,9 +33,11 @@
     - Parse a complex representation, create one of several targets.
 
 ## Problem:
+
     Imagine a complex object that requires laborious, step-by-step initialization of many fields and nested objects. Such initialization code is usually buried inside a monstrous constructor with lots of parameters. Or even worse: scattered all over the client code.
 
 ## Participants:
+
     - Builder
             specifies an abstract interface for creating parts of a Product object
     - ConcreteBuilder
@@ -45,6 +51,7 @@
             includes classes that define the constituent parts, including interfaces for assembling the parts into the final result
 
 ## Pros and Cons:
+
     - [x] You can construct objects step-by-step, defer construction steps or run steps recursively.
     - [x] You can reuse the same construction code when building various representations of products.
     - [x] Single Responsibility Principle. You can isolate complex construction code from the business logic of the product.
@@ -52,9 +59,10 @@
     - [x] It supports to change the internal representation of objects.
     - [x] It provides better control over construction process.
 
-    - []  The overall complexity of the code increases since the pattern requires creating multiple new classes.
+    - []  The overall complexity of the code (and number of lines) increases since the pattern requires creating multiple new classes.
 
 ## Relations with Other Patterns:
+
     - Many designs start by using Factory Method (less complicated and more customizable via subclasses) and evolve toward Abstract Factory, Prototype, or Builder (more flexible, but more complicated).
 
     - Builder focuses on constructing complex objects step by step. Abstract Factory specializes in creating families of related objects. Abstract Factory returns the product immediately, whereas Builder lets you run some additional construction steps before fetching the product.
@@ -63,6 +71,7 @@
     - Abstract Factories, Builders and Prototypes can all be implemented as Singletons.
 
 ## Usage/Applicability:
+
     - Use the Builder pattern to get rid of a “telescopic constructor”.
         Say you have a constructor with ten optional parameters. Calling such a beast is very inconvenient; therefore, you overload the constructor and create several shorter versions with fewer parameters. These constructors still refer to the main one, passing some default values into any omitted parameters.
 
@@ -87,3 +96,7 @@
         The Builder pattern lets you construct products step-by-step. You could defer execution of some steps without breaking the final product. You can even call steps recursively, which comes in handy when you need to build an object tree.
 
         A builder doesn’t expose the unfinished product while running construction steps. This prevents the client code from fetching an incomplete result.
+
+        - When you want to make a complex object by specifying only its type and content. The built object is constructed from the details of its construction.
+        - When you to decouple the process of building a complex object from the parts that make up the object.
+        - When you want to isolate the code for construction and representation.

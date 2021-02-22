@@ -797,6 +797,95 @@ namespace DesignPatterns.AbstractFactoryPattern
     }
 
     #endregion
+    // ---------------------------------------------------------------
+
+    #region Sample7
+    public interface Animal
+    {
+        string speak();
+    }
+
+    public class Cat : Animal
+    {
+        public string speak() =>
+            "Meow Meow Meow";
+    }
+
+    public class LionNew : Animal
+    {
+        public string speak() =>
+            "Roar";
+    }
+
+    public class Dog : Animal
+    {
+        public string speak() =>
+            "Bark bark";
+    }
+
+    public class Octopus : Animal
+    {
+        public string speak() =>
+            "SQUAWCK";
+    }
+
+    public class Shark : Animal
+    {
+        public string speak() =>
+            "Cannot Speak";
+    }
+
+    public abstract class AnimalFactory
+    {
+        public abstract Animal GetAnimal(string AnimalType);
+
+        public static AnimalFactory CreateAnimalFactory(string FactoryType)
+        {
+            if (FactoryType.Equals("Sea"))
+                return new SeaAnimalFactory();
+            else
+                return new LandAnimalFactory();
+        }
+    }
+
+    public class LandAnimalFactory : AnimalFactory
+    {
+        public override Animal GetAnimal(string AnimalType)
+        {
+            if (AnimalType.Equals("Dog"))
+            {
+                return new Dog();
+            }
+            else if (AnimalType.Equals("Cat"))
+            {
+                return new Cat();
+            }
+            else if (AnimalType.Equals("Lion"))
+            {
+                return new LionNew();
+            }
+            else
+                return null;
+        }
+    }
+
+    public class SeaAnimalFactory : AnimalFactory
+    {
+        public override Animal GetAnimal(string AnimalType)
+        {
+            if (AnimalType.Equals("Shark"))
+            {
+                return new Shark();
+            }
+            else if (AnimalType.Equals("Octopus"))
+            {
+                return new Octopus();
+            }
+            else
+                return null;
+        }
+    }
+    #endregion
 
     public static class Print
     {

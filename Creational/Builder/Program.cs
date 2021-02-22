@@ -85,7 +85,7 @@ namespace DesignPatterns.Client
             #endregion
 
             #region Sample6
-            var director = new DirectorNew();
+            /* var director = new DirectorNew();
 
             var builder = new CarNewBuilder();
             director.ConstructSportsCar(builder);
@@ -99,7 +99,7 @@ namespace DesignPatterns.Client
             var manual = manualBuilder.GetProduct();
             manual.GetResult();
             System.Console.WriteLine("-------------------------------");
-            manual.Print();
+            System.Console.WriteLine(manual.Print()); */
             #endregion
 
             #region Sample7
@@ -158,6 +158,27 @@ namespace DesignPatterns.Client
 
             Console.WriteLine("\n");
             Console.WriteLine("Total Cost : " + orderedItems.GetCost()); */
+            #endregion
+
+            #region Sample11
+            /* CDBuilder cdBuilder = new CDBuilder();
+            CDType cdType1 = cdBuilder.BuildSonyCD();
+            cdType1.ShowItems();
+
+            CDType cdType2 = cdBuilder.BuildSamsungCD();
+            cdType2.ShowItems(); */
+            #endregion
+
+            #region Sample12
+            var beverageDirector = new BeverageDirector();
+
+            var tea = new TeaBuider();
+            var beverage = beverageDirector.MakeBeverage(tea);
+
+            Console.WriteLine(beverage.ShowBeverage());
+            var coffee = new CoffeeBuilder();
+            beverage = beverageDirector.MakeBeverage(coffee);
+            Console.WriteLine(beverage.ShowBeverage());
             #endregion
 
             Console.ReadKey();

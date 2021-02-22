@@ -7,7 +7,9 @@ namespace DesignPatterns.BuilderPattern
     public interface Item
     {
         string Name();
+
         Packing Packing();
+
         float Price();
     }
 
@@ -677,21 +679,17 @@ namespace DesignPatterns.BuilderPattern
             this.Seats = seats;
             this.Engine = engine;
             this.Transmission = transmission;
+            tripComputer.Car = this;
             this.TripComputer = tripComputer;
-
-            if (this.TripComputer != null)
-            {
-                this.TripComputer.Car = this;
-            }
 
             this.GPSNavigator = gpsNavigator;
         }
 
         public override Machine GetResult() =>
             new CarNew(CarType, Seats, Engine, Transmission, TripComputer, GPSNavigator);
-        
+
         public override string Print() =>
-            "XXXX";
+            throw new System.NotSupportedException();
     }
 
     public class Manual : Machine
@@ -814,12 +812,8 @@ namespace DesignPatterns.BuilderPattern
             Print.ToConsolLine($"Set {this.Car.Transmission} Transmission");
         }
 
-        public Machine GetProduct()
-        {
-            var product = this.Car;
-
-            return product;
-        }
+        public Machine GetProduct() =>
+            this.Car;
     }
 
     public class CarManualBuilder : Builder
@@ -873,7 +867,7 @@ namespace DesignPatterns.BuilderPattern
             var product = this.Manual;
             product.Engine.On();
             product.Engine.Go(30);
-            
+
             return product;
         }
     }
@@ -978,7 +972,6 @@ namespace DesignPatterns.BuilderPattern
         protected int _boardSize = 8;
 
         protected int _level = 1;
-
 
         public GameBuilder BoardSize(int boardSize)
         {
@@ -1128,8 +1121,7 @@ namespace DesignPatterns.BuilderPattern
         /* return this;*/
         #endregion
 
-        public void BuildBody()
-        =>
+        public void BuildBody() =>
             _productStockReport.BodyPart = string.Join(System
                                                         .Environment
                                                         .NewLine,
@@ -1181,6 +1173,7 @@ namespace DesignPatterns.BuilderPattern
     // --------------------------------------------------
 
     // Hierarchically Builder
+
     #region Sample9
     class BuilderBase<T, P>
             where T : BuilderBase<T, P>
@@ -1623,7 +1616,7 @@ namespace DesignPatterns.BuilderPattern
                 Print.ToConsolLine("|        3. Exit           |");
                 Print.ToConsolLine("============================");
 
-                int pizzaandcolddrinkchoice = int.Parse(System.Console.ReadLine());
+                var pizzaandcolddrinkchoice = int.Parse(System.Console.ReadLine());
 
                 switch (pizzaandcolddrinkchoice)
                 {
@@ -1791,7 +1784,7 @@ namespace DesignPatterns.BuilderPattern
                 Print.ToConsolLine("|        3. Exit                |");
                 Print.ToConsolLine("================================");
 
-                int coldDrink = int.Parse(System.Console.ReadLine());
+                var coldDrink = int.Parse(System.Console.ReadLine());
                 switch (coldDrink)
                 {
                     case 1:
@@ -1862,6 +1855,210 @@ namespace DesignPatterns.BuilderPattern
     }
     #endregion
     // --------------------------------------------------
+
+    #region Sample11
+    public interface IPacking
+    {
+        string Pack();
+        int Price();
+    }
+
+    public interface ICD : IPacking { }
+
+    public abstract class Company : ICD
+    {
+        public abstract int Price();
+
+        public abstract string Pack();
+    }
+
+    public class Sony : Company
+    {
+        public override int Price() =>
+            20;
+
+        public override string Pack() =>
+            "Sony CD";
+    }//End of the Sony class.  
+
+
+    public class Samsung : Company
+    {
+        public override int Price() =>
+            15;
+
+        public override string Pack() =>
+            "Samsung CD";
+    }//End of the Samsung class.
+
+    public class CDType
+    {
+        private List<IPacking> items = new List<IPacking>();
+
+        public void AddItem(IPacking packs) =>
+            items.Add(packs);
+
+        public void GetCost()
+        {
+            foreach (var packs in items)
+            {
+                packs.Price();
+            }
+        }
+
+        public void ShowItems()
+        {
+            foreach (var packing in items)
+            {
+                Print.ToConsol($"CD name : {packing.Pack()}");
+                Print.ToConsolLine($", Price : {packing.Price()}");
+            }
+        }
+    }//End of the CDType class.  
+
+    public class CDBuilder
+    {
+        public CDType BuildSonyCD()
+        {
+            CDType cds = new CDType();
+            cds.AddItem(new Sony());
+
+            return cds;
+        }
+
+        public CDType BuildSamsungCD()
+        {
+            CDType cds = new CDType();
+            cds.AddItem(new Samsung());
+
+            return cds;
+        }
+    }// End of the CDBuilder class.  
+
+    #endregion
+    // --------------------------------------------------
+
+    #region Sample12
+    public class Beverage
+    {
+        public int Water { get; set; }
+
+        public int Milk { get; set; }
+
+        public int Sugar { get; set; }
+
+        public int PowderQuantity { get; set; }
+
+        public string BeverageName { get; set; }
+
+        public string ShowBeverage() =>
+            $@"Hot {BeverageName} [{Water} ml of water, {Milk}ml of milk, {Sugar}
+                            gm of sugar, {PowderQuantity} gm of {BeverageName}]";
+    }
+
+    public abstract class BeverageBuilder
+    {
+        protected Beverage beverage;
+
+        public void CreateBeverage() =>
+            beverage = new Beverage();
+
+        public Beverage GetBeverage() =>
+            beverage;
+
+        public abstract void SetBeverageType();
+
+        public abstract void SetWater();
+
+        public abstract void SetMilk();
+
+        public abstract void SetSugar();
+
+        public abstract void SetPowderQuantity();
+    }
+
+    public class CoffeeBuilder : BeverageBuilder
+    {
+        public override void SetWater()
+        {
+            Print.ToConsolLine("Step 1 : Boiling water");
+            GetBeverage().Water = 40;
+        }
+
+        public override void SetMilk()
+        {
+            Print.ToConsolLine("Step 2 : Adding milk");
+            GetBeverage().Milk = 50;
+        }
+
+        public override void SetSugar()
+        {
+            Print.ToConsolLine("Step 3 : Adding Sugar");
+            GetBeverage().Sugar = 10;
+        }
+
+        public override void SetPowderQuantity()
+        {
+            Print.ToConsolLine("Step 4 : Adding 15 Grams of coffee powder");
+            GetBeverage().PowderQuantity = 15;
+        }
+
+        public override void SetBeverageType()
+        {
+            Print.ToConsolLine("Coffee");
+            GetBeverage().BeverageName = "Coffee";
+        }
+    }
+
+    public class TeaBuider : BeverageBuilder
+    {
+        public override void SetWater()
+        {
+            Print.ToConsolLine("Step 1 : Boiling water");
+            GetBeverage().Water = 50;
+        }
+
+        public override void SetMilk()
+        {
+            Print.ToConsolLine("Step 2 : Adding milk");
+            GetBeverage().Milk = 60;
+        }
+
+        public override void SetSugar()
+        {
+            Print.ToConsolLine("Step 3 : Adding Sugar");
+            GetBeverage().Sugar = 15;
+        }
+
+        public override void SetPowderQuantity()
+        {
+            Print.ToConsolLine("Step 4 : Adding 20 Grams of coffee powder");
+            GetBeverage().PowderQuantity = 20;
+        }
+
+        public override void SetBeverageType()
+        {
+            Print.ToConsolLine("Tea");
+            GetBeverage().BeverageName = "Tea";
+        }
+    }
+
+    public class BeverageDirector
+    {
+        public Beverage MakeBeverage(BeverageBuilder beverageBuilder)
+        {
+            beverageBuilder.CreateBeverage();
+            beverageBuilder.SetBeverageType();
+            beverageBuilder.SetWater();
+            beverageBuilder.SetMilk();
+            beverageBuilder.SetSugar();
+            beverageBuilder.SetPowderQuantity();
+
+            return beverageBuilder.GetBeverage();
+        }
+    }
+    #endregion
+
     public static class Print
     {
         public static void ToConsol(string txt, params object[] para) =>
